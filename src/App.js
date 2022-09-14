@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import MyButton from './UI/bunnton/MyButton';
+import PostForm from './components/PostForm';
 import PostList from './components/PostList';
+import MySelect from './UI/select/MySelect'
 import './style/app.css';
-import MyInput from './UI/input/MyInput';
 
 function App() {
 
@@ -12,23 +12,33 @@ function App() {
     { id: 3, title: 'Java', description: 'Very good language' },
     { id: 4, title: 'C#', description: 'Most backend language' },
   ])
+  const [selectedSort, setSelectedSort] = useState('');
 
-  const [post, setPost] = useState({ title: '', description: '' });
+  const createPost = (newPost) => {
+    setPosts([...posts, newPost]);
+  }
 
-  const addPost = (e) => {
-    e.preventDefault();
-    setPosts([...posts, { ...post, id: Date.now() }]);
-    setPost({ title: '', description: '' });
+  const deletePost = (post) => {
+    setPosts(posts.filter(p => p.id !== post.id));
+  }
+
+  const sortPosts = (sort) => {
+    setSelectedSort(sort);
+    setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])));
   }
 
   return (
     <div className="app">
-      <form>
-        <MyInput type='text' value={post.title} placeholder='title post' onChange={(e) => setPost({ ...post, title: e.target.value })} />
-        <MyInput type='text' value={post.description} placeholder='description post' onChange={(e) => setPost({ ...post, description: e.target.value })} />
-        <MyButton onClick={addPost}>Create post</MyButton>
-      </form>
-      <PostList posts={posts} title={'List posts'} />
+      <PostForm create={createPost} />
+      <hr style={{ margin: '5px 15px' }} />
+      <MySelect
+        options={[{ value: 'title', name: 'Sort by title' }, { value: 'description', name: 'Sort by description' }]}
+        defaultValue='Sort by'
+        value={selectedSort}
+        onChange={sortPosts}
+      />
+      {posts.length ? <PostList delet={deletePost} posts={posts} title={'List posts'} /> : <h2 style={{ textAlign: 'center' }}>Posts not found</h2>}
+
     </div >
   );
 }
