@@ -1,46 +1,57 @@
 import React, { useState } from 'react';
-import PostForm from './components/PostForm';
-import PostList from './components/PostList';
-import MySelect from './UI/select/MySelect'
-import './style/app.css';
+import PostList from './componets/PostList';
+import './styles/App.css';
 
-function App() {
+import PostForm from './componets/PostForm';
+import MySelect from './componets/UI/select/MySelect';
 
-  const [posts, setPosts] = useState([
-    { id: 1, title: 'Javascript', description: 'Only frontend language' },
-    { id: 2, title: 'Python', description: 'Very famous language' },
-    { id: 3, title: 'Java', description: 'Very good language' },
-    { id: 4, title: 'C#', description: 'Most backend language' },
-  ])
+const App = () => {
+  let [posts, setPosts] = useState([
+    { id: 2, title: 'Buby', body: 'zbile' },
+    { id: 1, title: 'AvaScript', body: 'Language of programming' },
+    { id: 3, title: 'C++', body: 'Backend programming' }
+  ]);
+
   const [selectedSort, setSelectedSort] = useState('');
+  const [searchPost, setSearchPost] = useState('');
 
-  const createPost = (newPost) => {
-    setPosts([...posts, newPost]);
+  const sortPost = (sort) => {
+    setSelectedSort(sort);
+    setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])))
   }
 
-  const deletePost = (post) => {
+  const createPost = (newPost) => {
+    setPosts([...posts, newPost])
+  }
+
+  const removePost = (post) => {
     setPosts(posts.filter(p => p.id !== post.id));
   }
 
-  const sortPosts = (sort) => {
-    setSelectedSort(sort);
-    setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])));
-  }
-
   return (
-    <div className="app">
+    <div className="App">
       <PostForm create={createPost} />
-      <hr style={{ margin: '5px 15px' }} />
-      <MySelect
-        options={[{ value: 'title', name: 'Sort by title' }, { value: 'description', name: 'Sort by description' }]}
-        defaultValue='Sort by'
-        value={selectedSort}
-        onChange={sortPosts}
+      <hr style={{ margin: '15px 0px' }} />
+      <input
+        value={searchPost}
+        onChange={e => setSearchPost(e.target.value)}
+        placeholder='search...'
       />
-      {posts.length ? <PostList delet={deletePost} posts={posts} title={'List posts'} /> : <h2 style={{ textAlign: 'center' }}>Posts not found</h2>}
+      <MySelect
+        value={selectedSort}
+        onChange={sortPost}
+        defaultValue={'sort for'}
+        options={[{ value: 'title', name: 'sort for title' }, { value: 'body', name: 'sort for description' }]}
+      />
+      {posts.length
+        ?
+        <PostList remove={removePost} posts={posts} title={'Posts list'} />
+        :
+        <h1 style={{ textAlign: 'center' }}>Posts not found</h1>
+      }
 
     </div >
   );
 }
 
-export default App;
+export default App

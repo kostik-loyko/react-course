@@ -1,0 +1,8 @@
+.button {
+  display: inline;
+  padding: 5px 10px;
+  border: 2px solid teal;
+  margin-top: 15px;
+  background-color: transparent;
+  color: teal;
+}
